@@ -1,4 +1,4 @@
-# QRoulette: Live Question Wheel
+# Question Fate: Live Question Wheel
 
 QRoulette is an interactive wheel designed to keep classes, workshops, and trivia nights moving. Load a plain-text file with question-and-answer pairs, launch the comic-style wheel, and reveal each prompt without repeats. You stay in control of the pacing while the audience stays on their toes.
 
@@ -33,7 +33,8 @@ Feel free to swap `8000` for a different port. Stop the server at any time with 
    ```
 3. Hit `¡GIRAR!` to spin the wheel. It cycles through numbers before stopping.
 4. The chosen question appears instantly. Press the space bar to show the answer.
-5. Once you run out of prompts, the app lets you know. Use `REINICIAR` to start a new round.
+5. Once you run out of prompts, the app lets you know. Use `REINICIAR` to shuffle the loaded set again.
+6. Hit `Salir al Inicio` whenever you want to clear the deck and go back to the upload screen for a fresh file.
 
 Need a shortcut for testing? `sample-questions-fate.txt` ships with a handful of entries.
 

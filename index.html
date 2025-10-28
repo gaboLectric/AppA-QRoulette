@@ -187,6 +187,9 @@
                 <button id="resetButton" class="comic-button text-3xl px-10 py-3 mt-4 bg-red-500 hover:bg-red-600" aria-label="Reiniciar juego">
                     Reiniciar
                 </button>
+                <button id="exitButton" class="comic-button text-3xl px-10 py-3 mt-4 bg-gray-500 hover:bg-gray-600" aria-label="Regresar a la pantalla inicial">
+                    Salir al Inicio
+                </button>
             </div>
 
             <!-- Columna Derecha: Preguntas y Respuestas -->
@@ -224,6 +227,7 @@
         const wheelCanvas = document.getElementById('wheelCanvas');
         const spinButton = document.getElementById('spinButton');
         const resetButton = document.getElementById('resetButton');
+        const exitButton = document.getElementById('exitButton');
         const questionBox = document.getElementById('questionBox');
         const answerBox = document.getElementById('answerBox');
         const fullscreenButton = document.getElementById('fullscreenButton');
@@ -496,6 +500,26 @@
         // --- Game Logic ---
         spinButton.addEventListener('click', spinWheel);
         resetButton.addEventListener('click', resetGame);
+        exitButton.addEventListener('click', exitToHome);
+
+        function resetDisplays() {
+            questionBox.classList.remove('hidden');
+            answerBox.classList.add('hidden');
+
+            questionBox.innerHTML = '';
+            const questionP = document.createElement('p');
+            questionP.textContent = '¡Gira la ruleta para empezar!';
+            questionBox.appendChild(questionP);
+
+            answerBox.innerHTML = '';
+            const answerP = document.createElement('p');
+            answerP.textContent = 'Respuesta...';
+            answerBox.appendChild(answerP);
+
+            answerBox.style.backgroundColor = '#F0F0F0';
+            answerBox.style.borderColor = 'black';
+            answerBox.style.borderWidth = '4px';
+        }
 
         function spinWheel() {
             if (isSpinning || questions.length === 0) return;
@@ -580,43 +604,13 @@
                 spinButton.style.cursor = 'not-allowed';
                 spinButton.textContent = '¡Completado!';
                 
-                // Show a back to home button
-                const backButtonDiv = document.createElement('div');
-                backButtonDiv.className = 'mt-4';
-                
-                const backButton = document.createElement('button');
-                backButton.id = 'backToHomeButton';
-                backButton.className = 'comic-button text-3xl px-10 py-3 mt-8 bg-blue-500 hover:bg-blue-600';
-                backButton.setAttribute('aria-label', 'Volver a la página de inicio');
-                backButton.textContent = 'Volver al Inicio';
-                
-                // Add event listener to the back button
-                backButton.addEventListener('click', () => {
-                    // Reset all game state
-                    usedQuestions = [];
-                    currentQuestion = null;
-                    
-                    // Show the file loader screen and hide game screen
-                    gameScreen.classList.add('hidden');
-                    fileLoaderScreen.classList.remove('hidden');
-                    
-                    // Enable the spin button again
-                    spinButton.disabled = false;
-                    spinButton.style.opacity = '1';
-                    spinButton.style.cursor = 'pointer';
-                    spinButton.textContent = 'Spin!';
-                    
-                    // Clear questions array
-                    questions = [];
-                });
-                
-                backButtonDiv.appendChild(backButton);
-                
-                // Find the parent container to add the back button
-                const leftPanel = document.querySelector('.flex.flex-col.items-center.justify-around');
-                if (leftPanel) {
-                    leftPanel.appendChild(backButtonDiv);
-                }
+                const instructionsP = document.createElement('p');
+                instructionsP.textContent = 'Usa "Salir al Inicio" para cargar un nuevo archivo cuando quieras continuar.';
+                instructionsP.style.marginTop = '1rem';
+                instructionsP.style.fontSize = '1.2rem';
+                instructionsP.style.fontFamily = 'Inter, sans-serif';
+                instructionsP.style.fontWeight = '600';
+                questionBox.appendChild(instructionsP);
             } else {
                 // Select a random question from remaining ones
                 currentQuestion = remainingQuestions[Math.floor(Math.random() * remainingQuestions.length)];
@@ -647,11 +641,6 @@
                     spinButton.style.cursor = 'pointer';
                     spinButton.textContent = 'Spin!';
                     
-                    // Remove back to home button if it exists
-                    const backButtonDiv = document.getElementById('backToHomeButton');
-                    if (backButtonDiv) {
-                        backButtonDiv.remove();
-                    }
                 }
             }
         }
@@ -662,24 +651,8 @@
             usedQuestions = [];
             currentQuestion = null;
             
-            // Reset answer box style if it was changed
-            answerBox.style.backgroundColor = '#F0F0F0';
-            answerBox.style.borderColor = 'black';
-            
-            // Show question box and hide answer box
-            questionBox.classList.remove('hidden');
-            answerBox.classList.add('hidden');
-            
-            // Reset text content
-            questionBox.innerHTML = '';
-            const p = document.createElement('p');
-            p.textContent = '¡Gira la ruleta para empezar!';
-            questionBox.appendChild(p);
-            
-            answerBox.innerHTML = '';
-            const answerP = document.createElement('p');
-            answerP.textContent = 'Respuesta...';
-            answerBox.appendChild(answerP);
+            // Reset question and answer display to defaults
+            resetDisplays();
             
             // Re-enable spin button if it was disabled
             spinButton.disabled = false;
@@ -687,14 +660,43 @@
             spinButton.style.cursor = 'pointer';
             spinButton.textContent = 'Spin!';
             
-            // Remove back to home button if it exists
-            const backButtonDiv = document.querySelector('.mt-4'); // This was the back button container
-            if (backButtonDiv && backButtonDiv.querySelector('#backToHomeButton')) {
-                backButtonDiv.remove();
-            }
-            
             // Redraw the wheel to refresh the display
             drawWheel();
+        }
+
+        function exitToHome() {
+            if (isSpinning) {
+                return; // Avoid abrupt exit mid-spin
+            }
+
+            if (clickInterval) {
+                clearInterval(clickInterval);
+            }
+
+            questions = [];
+            usedQuestions = [];
+            currentQuestion = null;
+
+            // Reset UI elements to initial state
+            resetDisplays();
+
+            spinButton.disabled = false;
+            spinButton.style.opacity = '1';
+            spinButton.style.cursor = 'pointer';
+            spinButton.textContent = 'Spin!';
+
+            // Reset wheel orientation
+            currentRotation = 0;
+            wheelCanvas.style.transition = 'none';
+            wheelCanvas.style.transform = 'rotate(0deg)';
+            drawWheel();
+
+            // Clear file input so the same file can be selected again if needed
+            fileInput.value = '';
+
+            // Restore initial screens
+            gameScreen.classList.add('hidden');
+            fileLoaderScreen.classList.remove('hidden');
         }
 
 
