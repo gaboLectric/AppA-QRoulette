@@ -14,11 +14,11 @@ Question Fate is an interactive wheel designed to keep classes, workshops, and t
 git clone https://github.com/gaboLectric/AppA-QRoulette.git
 cd AppA-QRoulette
 
-# 2. Serve the project locally
+# 2. Serve the project locally from the app project carpet
 python3 -m http.server 8000
 
 # 3. Launch the app
-http://localhost:8000/APPA-QRoulette/
+http://localhost:8000
 ```
 
 Feel free to swap `8000` for a different port. Stop the server at any time with `Ctrl+C`.
