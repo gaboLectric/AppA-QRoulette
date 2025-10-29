@@ -1,6 +1,6 @@
 # Question Fate: Live Question Wheel
 
-QRoulette is an interactive wheel designed to keep classes, workshops, and trivia nights moving. Load a plain-text file with question-and-answer pairs, launch the comic-style wheel, and reveal each prompt without repeats. You stay in control of the pacing while the audience stays on their toes.
+Question Fate is an interactive wheel designed to keep classes, workshops, and trivia nights moving. Load a plain-text file with question-and-answer pairs, launch the comic-style wheel, and reveal each prompt without repeats. You stay in control of the pacing while the audience stays on their toes.
 
 ## Minimum requirements
 
@@ -51,7 +51,7 @@ Need a shortcut for testing? `sample-questions-fate.txt` ships with a handful of
 - The wheel tracks used questions to avoid repeats until the list is exhausted.
 - Layout adapts nicely to large displays and mobile screens.
 
-## Future ideas
+## Future ideas?
 
 - Allow images or multimedia hints alongside the text.
 - Persist progress in `localStorage` so you can pause and resume sessions.
