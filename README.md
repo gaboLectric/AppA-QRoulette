@@ -18,7 +18,7 @@ cd AppA-QRoulette
 python3 -m http.server 8000
 
 # 3. Launch the app
-xdg-open http://localhost:8000/index.html
+http://localhost:8000/APPA-QRoulette/
 ```
 
 Feel free to swap `8000` for a different port. Stop the server at any time with `Ctrl+C`.
