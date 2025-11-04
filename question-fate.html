@@ -41,6 +41,8 @@
             /* Halftone dots pattern para el fondo de la pantalla */
             background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.2) 1px, transparent 0);
             background-size: 10px 10px;
+            transform: scale(0.8);
+            transform-origin: center;
         }
 
         /* Botón de girar (SPIN!) */
@@ -264,44 +266,50 @@
         function playClickSound() {
             if (!audioCtx) return;
             try {
-                // Sonido corto y agudo
+                // Sonido de tick suave
                 const clickOsc = audioCtx.createOscillator();
                 const clickG = audioCtx.createGain();
                 
-                clickOsc.type = 'sawtooth';
-                clickOsc.frequency.setValueAtTime(1000, audioCtx.currentTime);
-                clickOsc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.1);
+                clickOsc.type = 'square';
+                clickOsc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                clickOsc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.05);
                 
-                clickG.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                clickG.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                clickG.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                clickG.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
                 
                 clickOsc.connect(clickG);
                 clickG.connect(audioCtx.destination);
                 
                 clickOsc.start(audioCtx.currentTime);
-                clickOsc.stop(audioCtx.currentTime + 0.1);
+                clickOsc.stop(audioCtx.currentTime + 0.05);
             } catch (e) {
                 console.error("Error al reproducir sonido de clic:", e);
             }
         }
 
-        // Sonido de "finalización" (ding!)
+        // Sonido de "finalización" (campana triunfante)
         function playEndSound() {
             if (!audioCtx) return;
             try {
-                const osc = audioCtx.createOscillator();
-                const g = audioCtx.createGain();
-                
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
-                g.gain.setValueAtTime(0.4, audioCtx.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1);
-                
-                osc.connect(g);
-                g.connect(audioCtx.destination);
-                
-                osc.start(audioCtx.currentTime);
-                osc.stop(audioCtx.currentTime + 1);
+                // Secuencia de tonos para un sonido de campana
+                const frequencies = [800, 1000, 1200];
+                frequencies.forEach((freq, index) => {
+                    setTimeout(() => {
+                        const osc = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                        g.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+                        
+                        osc.connect(g);
+                        g.connect(audioCtx.destination);
+                        
+                        osc.start(audioCtx.currentTime);
+                        osc.stop(audioCtx.currentTime + 0.5);
+                    }, index * 100);
+                });
             } catch (e) {
                 console.error("Error al reproducir sonido final:", e);
             }
